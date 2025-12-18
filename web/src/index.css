@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 320 70% 50%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 280 60% 20%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 330 85% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 280 70% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 280 30% 30%;
+    --muted-foreground: 0 0% 80%;
+
+    --accent: 340 90% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 140 70% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 280 50% 50%;
+    --input: 280 40% 25%;
+    --ring: 330 85% 60%;
+
+    --radius: 1rem;
+
+    /* Custom romantic gradients */
+    --gradient-romantic: linear-gradient(135deg, hsl(330, 85%, 60%) 0%, hsl(280, 70%, 55%) 50%, hsl(260, 80%, 50%) 100%);
+    --gradient-soft: linear-gradient(180deg, hsl(330, 60%, 50%, 0.3) 0%, hsl(280, 50%, 40%, 0.2) 100%);
+    --gradient-glow: radial-gradient(circle at center, hsl(330, 85%, 60%, 0.4) 0%, transparent 70%);
+    
+    /* Glass effects */
+    --glass-bg: hsl(280, 50%, 20%, 0.4);
+    --glass-border: hsl(330, 60%, 60%, 0.3);
+    --glass-shadow: 0 8px 32px hsl(280, 70%, 30%, 0.4);
+
+    /* Animations */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    background: transparent !important;
+  }
+
+  body {
+    @apply text-foreground font-sans antialiased;
+    background: transparent !important;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  #root {
+    background: transparent !important;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply backdrop-blur-xl rounded-3xl border;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .romantic-gradient {
+    background: var(--gradient-romantic);
+  }
+
+  .romantic-gradient-text {
+    background: var(--gradient-romantic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-effect {
+    box-shadow: 
+      0 0 20px hsl(330, 85%, 60%, 0.4),
+      0 0 40px hsl(280, 70%, 55%, 0.3),
+      0 0 60px hsl(260, 80%, 50%, 0.2);
+  }
+
+  .heartbeat {
+    animation: heartbeat 1.2s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(330, 85%, 70%, 0.3) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+@layer utilities {
+  .font-romantic {
+    font-family: 'Dancing Script', cursive;
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.15);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.15);
+  }
+  56% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px hsl(330, 85%, 60%, 0.4),
+      0 0 40px hsl(280, 70%, 55%, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 30px hsl(330, 85%, 60%, 0.6),
+      0 0 60px hsl(280, 70%, 55%, 0.4);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
