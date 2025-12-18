@@ -45,7 +45,7 @@
     --gradient-glow: radial-gradient(circle at center, hsl(330, 85%, 60%, 0.4) 0%, transparent 70%);
     
     /* Glass effects */
-    --glass-bg: hsl(280, 50%, 20%, 0.4);
+    --glass-bg: hsla(280, 51%, 20%, 0.801);
     --glass-border: hsl(330, 60%, 60%, 0.3);
     --glass-shadow: 0 8px 32px hsl(280, 70%, 30%, 0.4);
 
@@ -81,12 +81,32 @@
 }
 
 @layer components {
+  
   .glass-panel {
-    @apply backdrop-blur-xl rounded-3xl border;
-    background: var(--glass-bg);
+    @apply rounded-3xl border relative;
+    
     border-color: var(--glass-border);
     box-shadow: var(--glass-shadow);
+    isolation: isolate;
+    overflow: hidden;
+    background: transparent;
+    transform: translate3d(0, 0, 0);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
   }
+
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+
+    z-index: -1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: inherit;
+  }
+
+/* ... restante do código ... */
 
   .romantic-gradient {
     background: var(--gradient-romantic);
