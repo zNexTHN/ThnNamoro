@@ -18,7 +18,6 @@ local function OpenUI(data)
     })
 end
 
---- Fecha a UI de relacionamento
 local function CloseUI()
     if not isUIOpen then return end
     
@@ -59,6 +58,7 @@ local function ReceiveRequest(fromId, fromName, requestType)
         OpenUI({ status = 'single' })
     end
     
+    SetNuiFocus(true, true)
     SendNUIMessage({
         type = 'receiveRequest',
         data = {
@@ -145,8 +145,6 @@ end)
 
 RegisterNetEvent('relationship:notify', function(message, notifyType)
     TriggerEvent('Notify', notifyType, message,3000)
-
-    --NotifyUI(message, notifyType)
 end)
 
 

@@ -75,7 +75,7 @@ export function RequestModal({ request, onAccept, onReject }: RequestModalProps)
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-background/60 backdrop-blur-md"
+        className="absolute inset-0 bg-black/60" 
         onClick={onReject}
       />
 
