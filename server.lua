@@ -182,7 +182,8 @@ src.sendRequest = function(targetId,requestType)
                     return false,'Você já enviou um pedido para esta pessoa!'
                 end
                 
-                if requestType ~= 'dating' and requestType ~= 'marriage' then
+                print(requestType)
+                if requestType ~= 'dating' and requestType ~= 'marriage' and requestType ~= 'engagement' then
                     return false,'Tipo de pedido inválido!'
                 end
                 

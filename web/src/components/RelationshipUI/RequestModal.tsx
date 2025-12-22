@@ -116,12 +116,18 @@ export function RequestModal({ request, onAccept, onReject }: RequestModalProps)
         {/* Title */}
         <div className="text-center mb-6">
           <h2 className="text-3xl font-romantic text-foreground mb-2">
-            {request.type === 'marriage' ? 'Pedido de Casamento!' : 'Pedido de Namoro!'}
+            {request.type === 'marriage' 
+              ? 'Pedido de Casamento!' 
+              : request.type === 'engagement' 
+              ? 'Pedido de Noivado!' 
+              : 'Pedido de Namoro!'}
           </h2>
           <p className="text-muted-foreground">
             <span className="text-primary font-semibold">{request.fromName}</span>
             {request.type === 'marriage'
               ? ' quer se casar com você!'
+              : request.type === 'engagement'
+              ? ' quer noivar com você!'
               : ' quer namorar com você!'}
           </p>
         </div>
@@ -129,7 +135,11 @@ export function RequestModal({ request, onAccept, onReject }: RequestModalProps)
         {/* Request Type Badge */}
         <div className="flex justify-center mb-8">
           <span className="px-4 py-2 rounded-full romantic-gradient text-foreground text-sm font-semibold">
-            {request.type === 'marriage' ? '💍 Casamento' : '💕 Namoro'}
+            {request.type === 'marriage' 
+              ? '💍 Casamento' 
+              : request.type === 'engagement' 
+              ? '💎 Noivado' 
+              : '💕 Namoro'}
           </span>
         </div>
 

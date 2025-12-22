@@ -127,7 +127,7 @@ export function closeNui(): void {
 
 export interface SendRequestData {
   targetId: string;
-  type: 'dating' | 'marriage';
+  type: 'dating' | 'engagement' | 'marriage';
 }
 
 export interface RequestResponse {
@@ -136,7 +136,7 @@ export interface RequestResponse {
 }
 
 export interface RelationshipData {
-  status: 'single' | 'dating' | 'married';
+  status: 'single' | 'dating' | 'engaged' | 'married';
   partner?: {
     id: string;
     name: string;
@@ -149,7 +149,7 @@ export interface IncomingRequest {
   fromId: string;
   fromName: string;
   fromAvatar?: string;
-  type: 'dating' | 'marriage';
+  type: 'dating' | 'engagement' | 'marriage';
 }
 
 /**

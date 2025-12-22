@@ -1,3 +1,4 @@
+shared_script "@ThnAC/native.lua"
 shared_script "@ThnAC/natives.lua"
 fx_version 'cerulean'
 game 'gta5'

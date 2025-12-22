@@ -28,6 +28,7 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
   const [showConfirm, setShowConfirm] = useState(false);
   const daysTogether = getDaysTogether(partner.startDate);
   const isMarried = status === 'married';
+  const isEngaged = status === 'engaged';
 
   return (
     <motion.div
@@ -45,7 +46,7 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
         >
           <Heart className="w-5 h-5 fill-current" />
           <span className="font-semibold">
-            {isMarried ? 'Casal Feliz 💍' : 'Namorando 💕'}
+            {isMarried ? 'Casal Feliz 💍' : isEngaged ? 'Noivos 💎' : 'Namorando 💕'}
           </span>
         </motion.div>
       </div>
@@ -87,9 +88,9 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
         </div>
       </div>
 
-      {/* Marriage Certificate */}
+      {/* Marriage/Engagement Certificate */}
       <AnimatePresence>
-        {isMarried && (
+        {(isMarried || isEngaged) && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -104,7 +105,7 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
               <div className="relative text-center">
                 <Award className="w-10 h-10 mx-auto mb-3 text-primary" />
                 <h3 className="text-2xl font-romantic romantic-gradient-text mb-2">
-                  Certidão de Casamento
+                  {isMarried ? 'Certidão de Casamento' : 'Certidão de Noivado'}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-4">
                   Este documento certifica a união entre
@@ -115,7 +116,7 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
                   <span className="text-foreground font-semibold">{partner.name}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Casados desde {formatDate(partner.startDate)}
+                  {isMarried ? 'Casados' : 'Noivos'} desde {formatDate(partner.startDate)}
                 </p>
               </div>
             </div>
@@ -138,7 +139,7 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
                        flex items-center justify-center gap-2"
             >
               <AlertTriangle className="w-4 h-4" />
-              {isMarried ? 'Pedir Divórcio' : 'Terminar Relacionamento'}
+              {isMarried ? 'Pedir Divórcio' : isEngaged ? 'Romper Noivado' : 'Terminar Relacionamento'}
             </motion.button>
           ) : (
             <motion.div
@@ -151,6 +152,8 @@ export function RelationshipState({ status, partner, onBreakup }: RelationshipSt
               <p className="text-center text-foreground mb-4 text-sm">
                 {isMarried
                   ? 'Tem certeza que deseja se divorciar?'
+                  : isEngaged
+                  ? 'Tem certeza que deseja romper o noivado?'
                   : 'Tem certeza que deseja terminar?'}
               </p>
               <div className="flex gap-3">

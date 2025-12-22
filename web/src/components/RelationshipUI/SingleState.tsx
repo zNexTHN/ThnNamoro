@@ -94,7 +94,7 @@ export function SingleState({ onSendRequest }: SingleStateProps) {
               <div className="flex gap-2">
                 <button
                   onClick={() => setRequestType('dating')}
-                  className={`flex-1 px-4 py-3 rounded-xl border transition-all duration-300
+                  className={`flex-1 px-3 py-3 rounded-xl border transition-all duration-300 text-sm
                     ${requestType === 'dating'
                       ? 'romantic-gradient border-transparent text-foreground'
                       : 'bg-foreground/10 border-foreground/20 text-muted-foreground hover:bg-foreground/15'
@@ -103,8 +103,18 @@ export function SingleState({ onSendRequest }: SingleStateProps) {
                   💕 Namoro
                 </button>
                 <button
+                  onClick={() => setRequestType('engagement')}
+                  className={`flex-1 px-3 py-3 rounded-xl border transition-all duration-300 text-sm
+                    ${requestType === 'engagement'
+                      ? 'romantic-gradient border-transparent text-foreground'
+                      : 'bg-foreground/10 border-foreground/20 text-muted-foreground hover:bg-foreground/15'
+                    }`}
+                >
+                  💎 Noivado
+                </button>
+                <button
                   onClick={() => setRequestType('marriage')}
-                  className={`flex-1 px-4 py-3 rounded-xl border transition-all duration-300
+                  className={`flex-1 px-3 py-3 rounded-xl border transition-all duration-300 text-sm
                     ${requestType === 'marriage'
                       ? 'romantic-gradient border-transparent text-foreground'
                       : 'bg-foreground/10 border-foreground/20 text-muted-foreground hover:bg-foreground/15'

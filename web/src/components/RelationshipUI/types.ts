@@ -1,6 +1,6 @@
-export type RelationshipStatus = 'single' | 'pending' | 'dating' | 'married';
+export type RelationshipStatus = 'single' | 'pending' | 'dating' | 'engaged' | 'married';
 
-export type RequestType = 'dating' | 'marriage';
+export type RequestType = 'dating' | 'engagement' | 'marriage';
 
 export interface Partner {
   id: string;
