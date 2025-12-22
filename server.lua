@@ -170,6 +170,10 @@ local itensList = {
     ['marriage'] = 'o_aliança_de_casamento'
 }
 
+
+
+
+
 src.sendRequest = function(targetId,requestType)
     local source = source
     local user_id = vRP.getUserId(source)
@@ -235,6 +239,76 @@ src.sendRequest = function(targetId,requestType)
     end
 end 
 
+RegisterServerEvent('Thn:pedirNamoro', function(nplayer,requestType)
+    local source = source
+    local user_id = vRP.getUserId(source)
+    if user_id then        
+        if nplayer then
+            local nuser_id = vRP.getUserId(nplayer)
+            if nuser_id then
+                local identity = vRP.getUserIdentity(user_id) 
+                local srcName = identity.name..' '..identity.firstname
+                
+                if nuser_id == user_id then
+                    TriggerClientEvent('Notify', source, 'negado','Você não pode pedir a si mesmo!',3000)
+                    return false
+                end
+                
+                if IsInRelationship(user_id) then
+                    TriggerClientEvent('Notify', source, 'negado','Você já está em um relacionamento!',3000)
+                    return false
+                end
+
+                if IsInRelationship(nuser_id) then
+                    TriggerClientEvent('Notify', source, 'negado','Esta pessoa já está em um relacionamento!',3000)
+                    return false
+                end
+
+                local existingRequest = GetPendingRequest(nplayer)
+                if existingRequest and existingRequest.fromId == user_id then
+                    TriggerClientEvent('Notify', source, 'negado','Você já enviou um pedido para esta pessoa!',3000)
+                    return false
+                end
+                
+                if requestType ~= 'dating' and requestType ~= 'marriage' and requestType ~= 'engagement' then
+                    TriggerClientEvent('Notify', source, 'negado','Tipo de pedido inválido!',3000)
+                    return false
+                end
+
+                if requiredItens then                    
+                    local itemName = itensList[requestType]
+                    if itemName then
+                        if vRP.getInventoryItemAmount(user_id, itemName) < 2 then
+                            local itemNameIndex = nil
+                            if GetResourceState('snt-inventory') == 'started' then
+                                local itemNameIndex = exports['snt-inventory']:getItemName(itemName)
+                            end
+                            TriggerClientEvent('Notify', source, 'negado','Você não possui uma aliança de '..(itemNameIndex or itemName),3000)
+                            return false
+                        end
+                    end
+                end
+
+                
+                pendingRequests[nplayer] = {
+                    fromId = user_id,
+                    fromName = srcName,
+                    type = requestType,
+                    timestamp = GetGameTimer()
+                }
+                
+                TriggerClientEvent('relationship:receiveRequest', nplayer, user_id, srcName, requestType)
+                
+                local typeText = requestType == 'marriage' and 'casamento' or 'namoro'
+                TriggerClientEvent('Notify', source, 'sucesso','Pedido de ' .. typeText .. ' enviado!')
+                return true
+            end
+        else
+            TriggerClientEvent('Notify', source, 'negado','Cidadão não encontrado ou offline!',3000)
+            return false
+        end
+    end
+end)
 
 -- local itensList = {
 --     ['dating'] = '', --NAMORO
