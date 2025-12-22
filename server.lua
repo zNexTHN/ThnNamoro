@@ -6,6 +6,9 @@ vRPclient = Tunnel.getInterface("vRP")
 src = {}
 Tunnel.bindInterface(GetCurrentResourceName(),src)
 
+
+local requiredItens = false
+
 vRP.prepare("thn/create_relationships_table", [[
     CREATE TABLE IF NOT EXISTS thn_relationships (
         user_id INT(11) NOT NULL,
@@ -69,9 +72,16 @@ local function GetRelationshipData(user_id)
     if identity then
         partnerName = identity.name .. ' ' .. identity.firstname
     end
-    
+
+    if rel.type == 'marriage' then
+        rel.type = 'married'
+    end
+    if rel.type == 'engagement' then
+        rel.type = 'engaged'
+    end
+
     return {
-        status = rel.type == 'marriage' and 'married' or 'dating',
+        status = rel.type,
         partner = {
             id = tostring(rel.partnerId),
             name = partnerName,
@@ -154,6 +164,12 @@ src.getStatus = function()
     return { status = 'single' }
 end
 
+local itensList = {
+    ['dating'] = 'o_aliança_de_namoro', --NAMORO
+    ['engagement'] = 'o_aliança_de_noivado', --NOIVADO,
+    ['marriage'] = 'o_aliança_de_casamento'
+}
+
 src.sendRequest = function(targetId,requestType)
     local source = source
     local user_id = vRP.getUserId(source)
@@ -182,10 +198,23 @@ src.sendRequest = function(targetId,requestType)
                     return false,'Você já enviou um pedido para esta pessoa!'
                 end
                 
-                print(requestType)
                 if requestType ~= 'dating' and requestType ~= 'marriage' and requestType ~= 'engagement' then
                     return false,'Tipo de pedido inválido!'
                 end
+
+                if requiredItens then                    
+                    local itemName = itensList[requestType]
+                    if itemName then
+                        if vRP.getInventoryItemAmount(user_id, itemName) < 2 then
+                            local itemNameIndex = nil
+                            if GetResourceState('snt-inventory') == 'started' then
+                                local itemNameIndex = exports['snt-inventory']:getItemName(itemName)
+                            end
+                            return false, 'Você não possui uma aliança de '..(itemNameIndex or itemName)
+                        end
+                    end
+                end
+
                 
                 pendingRequests[nplayer] = {
                     fromId = user_id,
@@ -205,6 +234,14 @@ src.sendRequest = function(targetId,requestType)
         end
     end
 end 
+
+
+-- local itensList = {
+--     ['dating'] = '', --NAMORO
+--     ['engagement'] = 'o_aliança_de_noivado', --NOIVADO,
+--     ['marriage'] = 'o_aliança_de_casamento'
+-- }
+
 
 RegisterNetEvent('relationship:acceptRequest', function(fromId)
     local src = source
@@ -229,6 +266,19 @@ RegisterNetEvent('relationship:acceptRequest', function(fromId)
         return
     end
     
+    if requiredItens then        
+        local itemName = itensList[request.type]
+        if itemName then
+            if vRP.tryGetInventoryItem(request.fromId, itemName, 1) then
+                vRP.giveInventoryItem(user_id, itemName,1)
+            else
+                TriggerClientEvent('relationship:notify', src, 'O cidadão não tem uma aliança!', 'negado')
+                pendingRequests[src] = nil
+                return
+            end
+        end
+    end
+
     CreateRelationship(user_id, fromId, request.type)
 
     pendingRequests[src] = nil
@@ -238,6 +288,22 @@ RegisterNetEvent('relationship:acceptRequest', function(fromId)
     
     local typeText = request.type == 'marriage' and 'casaram' or 'começaram a namorar'
     local emoji = request.type == 'marriage' and '💍' or '💕'
+
+
+    local identity = vRP.getUserIdentity(fromId)
+    local nidentity = vRP.getUserIdentity(user_id)
+    if identity and nidentity then
+        --requestType ~= 'dating' and requestType ~= 'marriage' and requestType ~= 'engagement'
+        local fullName = identity.name..' '..identity.firstname
+        local nfullName = nidentity.name..' '..nidentity.firstname
+        if request.type == 'dating' then
+            TriggerClientEvent("chatMessage", -1, "^2[RELACIONAMENTO]^7", {209, 4, 55}, 'Um novo casal na cidade! O cidadão '..fullName..' está namorando com à '..nfullName)
+        -- elseif request.type == 'marriage' then 
+
+        -- elseif request.type == 'engagement' then 
+
+        end
+    end
     
     TriggerClientEvent('relationship:notify', src, 'Vocês ' .. typeText .. '! ' .. emoji, 'sucesso')
     TriggerClientEvent('relationship:notify', nplayer, 'Vocês ' .. typeText .. '! ' .. emoji, 'sucesso')
@@ -284,12 +350,20 @@ RegisterNetEvent('relationship:breakup', function()
     end
     
     local actionText = wasMarried and 'se divorciaram' or 'terminaram'
-    
+
     TriggerClientEvent('relationship:notify', src, 'Vocês ' .. actionText .. ' 💔', 'negado')
     
     if nplayer then
         TriggerClientEvent('relationship:notify', nplayer, 'Vocês ' .. actionText .. ' 💔', 'negado')
     end
+
+    local identity = vRP.getUserIdentity(partnerId)
+    local nidentity = vRP.getUserIdentity(user_id)
+    if identity and nidentity then
+        local fullName = identity.name..' '..identity.firstname
+        local nfullName = nidentity.name..' '..nidentity.firstname
+        TriggerClientEvent("chatMessage", -1, "^2[RELACIONAMENTO]^7", {209, 4, 55}, 'Poxa que pena! O relacionamento de '..fullName..' x '..nfullName..' foi encerrado 💔')
+    end 
 end)
 
 AddEventHandler('playerDropped', function()
